@@ -189,7 +189,7 @@ def predict_structure(
     if FLAGS.random_seed is not None:
         random_seed = FLAGS.random_seed
     else:
-        if fold_backend in ['alphafold', 'alphalink']:
+        if fold_backend in ['alphafold', 'alphalink', 'APACE']:
             random_seed = random.randrange(sys.maxsize // len(model_runners_and_configs["model_runners"]))
         elif fold_backend=='alphafold3':
             random_seed = random.randrange(2**32 - 1)
@@ -255,6 +255,7 @@ def pre_modelling_setup(
         "flash_attention_implementation" : flags.flash_attention_implementation,
         "buckets" : flags.buckets,
         "jax_compilation_cache_dir" : flags.jax_compilation_cache_dir,
+        "benchmark" : flags.benchmark,
     }
 
     if isinstance(object_to_model, MultimericObject):

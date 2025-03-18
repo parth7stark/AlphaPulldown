@@ -69,7 +69,10 @@ def main(argv):
     parent_dir = os.path.dirname(os.path.abspath(__file__))
     base_command = [f"python3 {parent_dir}/run_structure_prediction.py"]
 
-    fold_backend, model_dir = "alphafold", FLAGS.data_dir
+    if FLAGS.fold_backend == "APACE":
+        fold_backend, model_dir = "APACE", FLAGS.data_dir
+    else:
+        fold_backend, model_dir = "alphafold", FLAGS.data_dir
     if FLAGS.use_alphalink:
         fold_backend, model_dir = "alphalink", FLAGS.alphalink_weight
     elif FLAGS.use_unifold:
@@ -100,6 +103,8 @@ def main(argv):
         "--desired_num_res": FLAGS.desired_num_res,
         "--desired_num_msa": FLAGS.desired_num_msa,
         "--models_to_relax": FLAGS.models_to_relax
+        # "--benchmark": FLAGS.benchmark,
+        # "--model_preset": FLAGS.model_preset
     }
 
     command_args = {}

@@ -40,6 +40,13 @@ class FoldingBackendManager:
     def import_backends(self) -> None:
         """Import all available backends"""
         try:
+            from .APACE_backend import APACEBackend
+            self._BACKEND_REGISTRY.update({"APACE": APACEBackend})
+        except Exception as e:
+            logging.warning(
+                f"Failed to import APACEBackend: {e}. Perhaps you haven't installed all the required dependencies.")
+
+        try:
             from .alphalink_backend import AlphaLinkBackend
             self._BACKEND_REGISTRY.update({"alphalink": AlphaLinkBackend})
         except Exception as e:

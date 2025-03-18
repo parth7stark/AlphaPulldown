@@ -70,8 +70,11 @@ From: nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu20.04
     pip3 install --upgrade pip --no-cache-dir \
     && pip3 install --upgrade --no-cache-dir \
         pytest \
-        "jax[cuda12]"
+        "jax[cuda12]" 
 
+    pip install ray==2.5.1
+    # Apply custom changes to the `ray` library
+    cp -r /app/AlphaPulldown/parth_scripts/utils.py /opt/conda/lib/python3.10/site-packages/ray/_private/utils.py
     # Set permissions
     chmod u+s /sbin/ldconfig.real
 
