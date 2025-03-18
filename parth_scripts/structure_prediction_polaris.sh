@@ -26,16 +26,16 @@ apptainer version
 # export XLA_PYTHON_CLIENT_ALLOCATOR="platform"
 # export XLA_PYTHON_CLIENT_PREALLOCATE="false"
 # export XLA_FLAGS="--xla_gpu_triton_gemm_any=True"
-export XLA_FLAGS="--xla_gpu_force_compilation_parallelism=8"
+# export XLA_FLAGS="--xla_gpu_force_compilation_parallelism=8"
 # export XLA_FLAGS="$XLA_FLAGS --xla_gpu_autotune_level=2"
 # export TF_XLA_FLAGS="--tf_xla_auto_jit=2 --tf_xla_enable_xla_devices"
 # export XLA_FLAGS="--xla_gpu_enable_latency_hiding_scheduler=true"
 
 # MAXRAM=$(echo `ulimit -m` '/ 1024.0'|bc)
-MAXRAM=512000
-GPUMEM=`nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits|tail -1`
-export XLA_PYTHON_CLIENT_MEM_FRACTION=`echo "scale=3;$MAXRAM / $GPUMEM"|bc`
-export TF_FORCE_UNIFIED_MEMORY='1'
+# MAXRAM=512000
+# GPUMEM=`nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits|tail -1`
+# export XLA_PYTHON_CLIENT_MEM_FRACTION=`echo "scale=3;$MAXRAM / $GPUMEM"|bc`
+# export TF_FORCE_UNIFIED_MEMORY='1'
 
 # Getting the node names
 nodes=$(cat "$PBS_NODEFILE")
@@ -75,7 +75,12 @@ export port
 
 cd /lus/eagle/projects/RAPINS/parth/AlphaPulldown
 
-mpiexec -n 1 -ppn 1 \
+# mpiexec -n 1 -ppn 32 \
+
+# below line scheduled all ray predict to core 33
+# mpiexec -n 1 -ppn 32 --depth=1 --cpu-bind core --env OMP_NUM_THREADS=2 -env OMP_PLACES=threads \
+
+mpiexec -n 1 --ppn 1 --depth=32 --cpu-bind depth --env OMP_NUM_THREADS=32 --env OMP_PLACES=threads \
 apptainer exec --fakeroot --nv \
   --bind /lus/eagle/projects/RAPINS/parth/pulldown_runfiles/features_db:/mnt/features_db \
   --bind /lus/eagle/projects/RAPINS/APACE/data_hyun_official/:/mnt/alphafold_data \
