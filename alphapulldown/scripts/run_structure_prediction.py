@@ -22,6 +22,7 @@ import random
 import sys
 from alphapulldown.folding_backend import backend
 from alphapulldown.folding_backend.alphafold_backend import ModelsToRelax
+from alphapulldown.folding_backend.APACE_backend import ModelsToRelax
 from alphapulldown.objects import MultimericObject, MonomericObject, ChoppedObject
 from alphapulldown.utils.modelling_setup import create_interactors, create_custom_info, parse_fold
 

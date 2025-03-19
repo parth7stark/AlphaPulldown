@@ -122,7 +122,7 @@ def _reset_template_features(feature_dict: Dict) -> None:
         elif key == "num_templates":
             feature_dict[key] = np.ones_like(value)
 
-@ray.remote(num_gpus=1, num_cpus=4)
+@ray.remote(num_gpus=1)
 def predict_one_structure(
     model_name, 
     model_runner, 
@@ -238,7 +238,7 @@ def predict_one_structure(
     
     return model_name, prediction_result, timings
 
-@ray.remote(num_gpus=1, num_cpus=6)
+@ray.remote(num_gpus=1)
 def relax_single_structure(
     model_name,
     amber_relaxer,
