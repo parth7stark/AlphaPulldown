@@ -71,6 +71,7 @@ echo "IP Head: $ip_head"
 
 export head_node_ip
 export port
+export RAY_TMPDIR="/tmp"
 # export PMI_RANK=0
 
 cd /lus/eagle/projects/RAPINS/parth/AlphaPulldown

@@ -3,7 +3,7 @@ ldconfig
 
 if [ $PMI_RANK -eq 0 ] ; then
   echo "ray start head"
-  ray start --head --node-ip-address="$head_node_ip" --port=$port --num-cpus 32 --num-gpus 4 --block &
+  ray start --head --node-ip-address="$head_node_ip" --port=$port --num-cpus 32 --num-gpus 4 --temp-dir=/tmp --block &
   while ! ray status --address="$ip_head" &>/dev/null ; do
     sleep 5
   done
@@ -30,6 +30,6 @@ else
     sleep 5
   done
   echo "ray start worker"
-  ray start --address "$ip_head" --node-ip-address=$worker_ip  --num-cpus 32 --num-gpus 4  --block &
+  ray start --address "$ip_head" --node-ip-address=$worker_ip  --num-cpus 32 --num-gpus 4  --temp-dir=/tmp --block &
   wait
 fi
