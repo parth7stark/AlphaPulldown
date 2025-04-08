@@ -102,7 +102,8 @@ def main(argv):
         "--protein_delimiter": FLAGS.protein_delimiter,
         "--desired_num_res": FLAGS.desired_num_res,
         "--desired_num_msa": FLAGS.desired_num_msa,
-        "--models_to_relax": FLAGS.models_to_relax
+        "--models_to_relax": FLAGS.models_to_relax,
+        "--random_seed": FLAGS.random_seed
         # "--benchmark": FLAGS.benchmark,
         # "--model_preset": FLAGS.model_preset
     }

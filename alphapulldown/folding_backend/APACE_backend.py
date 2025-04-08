@@ -157,6 +157,8 @@ def predict_one_structure(
     timings[f'process_features_{model_name}_start_time'] = datetime.datetime.fromtimestamp(t_0).strftime("%H:%M:%S")
     timings[f'process_features_{model_name}_end_time'] =  datetime.datetime.fromtimestamp(end_time).strftime("%H:%M:%S")
 
+    logging.info(f"Model Seed: {model_random_seed}, Random Seed: {random_seed}")
+    
     # Die if --multimeric_mode=True but no non-zero templates are in the feature dict
     if multimeric_mode:
         if "template_all_atom_positions" in processed_feature_dict:
