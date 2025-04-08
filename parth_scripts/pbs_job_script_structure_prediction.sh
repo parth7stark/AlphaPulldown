@@ -3,7 +3,7 @@
 #PBS -l place=exclhost
 #PBS -l filesystems=home:eagle
 #PBS -q debug
-#PBS -N test_wo_random_seed_structure_prediction
+#PBS -N test_new_IP_function
 #PBS -l walltime=00:10:00
 #PBS -k doe
 #PBS -j oe
@@ -47,24 +47,8 @@ echo "nodes list $nodes"
 head_node=${nodes_array[0]}
 
 echo "head_node: $head_node"
-head_node_ip=$(mpiexec -n 1 --host $head_node hostname --ip-address)
-# head_node_ip=$(ssh $head_node "hostname --ip-address")
-# head_node_ip=$(srun --nodes=1 --ntasks=1 -w "$head_node" hostname --ip-address)
+head_node_ip=$(getent hosts $head_node | awk '{print $1}' | head -n 1)
 
-# if we detect a space character in the head node IP, we'll
-# convert it to an ipv4 address. This step is optional.
-if [[ "$head_node_ip" == *" "* ]]; then
-IFS=' ' read -ra ADDR <<<"$head_node_ip"
-if [[ ${#ADDR[0]} -gt 16 ]]; then
-  head_node_ip=${ADDR[1]}
-else
-  head_node_ip=${ADDR[0]}
-fi
-echo "IPV6 address detected. We split the IPV4 address as $head_node_ip"
-fi
-# __doc_head_address_end__
-
-# __doc_head_ray_start__
 port=6379
 ip_head=$head_node_ip:$port
 export ip_head
@@ -97,7 +81,7 @@ apptainer exec --fakeroot --nv \
     --model_preset=multimer \
     --random_seed=42
 
-command: ['python3 /app/AlphaPulldown/alphapulldown/scripts/run_structure_prediction.py', '--output_directory', '/mnt/output', '--num_cycle', '3', '--num_predictions_per_model', '1', '--data_directory', '/mnt/alphafold_data', '--features_directory', '/mnt/features_db', '--pair_msa', '', '--nomsa_depth_scan', '', '--nomultimeric_template', '', '--fold_backend', 'APACE', '--nocompress_result_pickles', '', '--noremove_result_pickles', '', '--remove_keys_from_pickles', '', '--use_ap_style', '', '--use_gpu_relax', '', '--protein_delimiter', '+', '--models_to_relax', 'All', '--random_seed', '42', '--input', 'P30556+P01019:25-32']
+# command: ['python3 /app/AlphaPulldown/alphapulldown/scripts/run_structure_prediction.py', '--output_directory', '/mnt/output', '--num_cycle', '3', '--num_predictions_per_model', '1', '--data_directory', '/mnt/alphafold_data', '--features_directory', '/mnt/features_db', '--pair_msa', '', '--nomsa_depth_scan', '', '--nomultimeric_template', '', '--fold_backend', 'APACE', '--nocompress_result_pickles', '', '--noremove_result_pickles', '', '--remove_keys_from_pickles', '', '--use_ap_style', '', '--use_gpu_relax', '', '--protein_delimiter', '+', '--models_to_relax', 'All', '--random_seed', '42', '--input', 'P30556+P01019:25-32']
 
     
 
