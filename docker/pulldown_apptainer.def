@@ -38,7 +38,7 @@ From: nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu20.04
         conda-forge::git
 
     # Install mamba packages
-    /opt/conda/bin/mamba install -y -c conda-forge -c bioconda -c omnia --solver classic \
+    /opt/conda/bin/mamba install -y -c conda-forge -c bioconda -c omnia \
         openmm==8.0 \
         pdbfixer==1.9 \
         kalign2 \
@@ -70,7 +70,7 @@ From: nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu20.04
     pip3 install --upgrade pip --no-cache-dir \
     && pip3 install --upgrade --no-cache-dir \
         pytest \
-        "jax[cuda12]" 
+        "jax[cuda12]"==0.5.3
 
     # pip install ray==2.5.1
     pip install ray
