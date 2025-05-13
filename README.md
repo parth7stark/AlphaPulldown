@@ -2,6 +2,25 @@
 
 > AlphaPulldown fully **maintains backward compatibility** with input files and scripts from versions 1.x.
 
+## How to Cite
+
+If AlphaPulldown contributed significantly to your research, please cite the corresponding publication in *Bioinformatics*:
+
+```bibtex
+@article{Molodenskiy2025AlphaPulldown2,
+  author    = {Molodenskiy, Dmitry and Maurer, Valentin J. and Yu, Dingquan and Chojnowski, Grzegorz and Bienert, Stefan and Tauriello, Gerardo and Gilep, Konstantin and Schwede, Torsten and Kosinski, Jan},
+  title     = {AlphaPulldown2—a general pipeline for high-throughput structural modeling},
+  journal   = {Bioinformatics},
+  volume    = {41},
+  number    = {3},
+  pages     = {btaf115},
+  year      = {2025},
+  doi       = {10.1093/bioinformatics/btaf115}
+}
+```
+
+---
+
 ## Table of Contents
 
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
@@ -536,7 +555,7 @@ python3 -m pip install alphapulldown
 ```
 
 ```bash
-pip install -U "jax[cuda12]"
+pip install -U "jax[cuda12]"==0.5.3
 ```
    
 > [!NOTE] 
@@ -1812,6 +1831,9 @@ At this time, there is only one option left unexplained: `--compress`. It tells 
 # Features Database
 
 Instead of generating feature files locally, you can download them from the **AlphaPulldown Features Database**, which contains precomputed protein **features for major model organisms**.
+
+>[!WARNING]
+>The MSA features in this database do not include information necessary for pairing sequences from the same species, which may result in reduced accuracy. We are working on fixing this.
 
 ## Installation
 
