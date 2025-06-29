@@ -249,7 +249,8 @@ def pre_modelling_setup(
 
     # TODO: Add backend specific flags here
     flags_dict = {
-        "model_name": "monomer_ptm",
+        # "model_name": "monomer_ptm",
+        "model_name": flags.model_preset,
         "num_cycle": flags.num_cycle,
         "model_dir": flags.data_directory,
         "num_multimer_predictions_per_model": flags.num_predictions_per_model,

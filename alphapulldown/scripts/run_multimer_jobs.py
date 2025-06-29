@@ -103,7 +103,8 @@ def main(argv):
         "--desired_num_res": FLAGS.desired_num_res,
         "--desired_num_msa": FLAGS.desired_num_msa,
         "--models_to_relax": FLAGS.models_to_relax,
-        "--random_seed": FLAGS.random_seed
+        "--random_seed": FLAGS.random_seed,
+        "--model_preset": FLAGS.model_preset
         # "--benchmark": FLAGS.benchmark,
         # "--model_preset": FLAGS.model_preset
     }

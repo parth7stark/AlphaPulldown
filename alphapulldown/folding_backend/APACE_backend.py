@@ -33,6 +33,9 @@ import datetime
 
 logging.set_verbosity(logging.INFO)
 
+# fall back to 1 if for some reason the var isn’t set
+NUM_GPUS_PER_TASK = int(os.environ.get("RAY_NUM_GPUS", "1"))
+print("Ray NUM_GPUS_PER_TASK: ", NUM_GPUS_PER_TASK)
 
 # Relaxation parameters.
 MAX_TEMPLATE_HITS = 20
@@ -122,7 +125,7 @@ def _reset_template_features(feature_dict: Dict) -> None:
         elif key == "num_templates":
             feature_dict[key] = np.ones_like(value)
 
-@ray.remote(num_gpus=1)
+@ray.remote(num_gpus=NUM_GPUS_PER_TASK)
 def predict_one_structure(
     model_name, 
     model_runner, 
@@ -240,19 +243,23 @@ def predict_one_structure(
     
     return model_name, prediction_result, timings
 
-@ray.remote(num_gpus=1)
+@ray.remote(num_gpus=NUM_GPUS_PER_TASK)
 def relax_single_structure(
     model_name,
     amber_relaxer,
-    prediction_results,
+    prediction_result,  # <- note it's just a single model's result
+    # prediction_results,
     output_dir
 ):
     """Ray task for relaxing a single protein model on a dedicated GPU."""
     t_0 = time.time()
     
     # Load the unrelaxed protein
-    if 'unrelaxed_protein' in prediction_results[model_name]:
-        unrelaxed_protein = prediction_results[model_name]['unrelaxed_protein']
+    # if 'unrelaxed_protein' in prediction_results[model_name]:
+    #     unrelaxed_protein = prediction_results[model_name]['unrelaxed_protein']
+    # Use prediction_result instead of prediction_results[model_name]
+    if 'unrelaxed_protein' in prediction_result:
+        unrelaxed_protein = prediction_result['unrelaxed_protein']
     else:
         unrelaxed_pdb_path = os.path.join(output_dir, f"unrelaxed_{model_name}.pdb")
         if not os.path.exists(unrelaxed_pdb_path):
@@ -815,17 +822,35 @@ class APACEBackend(FoldingBackend):
         """
         Add ray here. Hyun added here
         """
+
+        # Use ray.put() for shared objects
+        amber_relaxer_ref = ray.put(amber_relaxer)
+
+        # Use ray.put() for each model's prediction result separately
+        prediction_result_refs = {
+            model_name: ray.put(prediction_results[model_name])
+            for model_name in to_relax
+        }
        
         # Launch Ray tasks for each model
         ray_tasks = []
         for model_name in to_relax:
             if f'relax_{model_name}' in timings:
                 continue
+            # ray_tasks.append(
+            #     relax_single_structure.remote(
+            #         model_name,
+            #         amber_relaxer,
+            #         prediction_results,
+            #         output_dir
+            #     )
+            # )
+
             ray_tasks.append(
                 relax_single_structure.remote(
                     model_name,
-                    amber_relaxer,
-                    prediction_results,
+                    amber_relaxer_ref,
+                    prediction_result_refs[model_name],  # not full dict anymore
                     output_dir
                 )
             )
